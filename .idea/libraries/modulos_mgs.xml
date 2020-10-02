@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="modulos mgs">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../modulos mgs" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../modulos mgs" />
+    </SOURCES>
+    <jarDirectory url="file://$PROJECT_DIR$/../modulos mgs" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/../modulos mgs" recursive="false" type="SOURCES" />
+  </library>
+</component>

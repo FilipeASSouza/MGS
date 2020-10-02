@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="MGSNEW:jar">
+    <output-path>$PROJECT_DIR$/../compiler/artifacts/MGSNEW_jar</output-path>
+    <root id="archive" name="MGS.jar">
+      <element id="module-output" name="MGS" />
+    </root>
+  </artifact>
+</component>
