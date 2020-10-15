@@ -1,4 +1,5 @@
-import br.com.sankhya.bh.contabilidadeImportacaoManual.ImportacaoManualModel;
+package br.com.mgs.contabilidadeImportacaoManual;
+
 import br.com.sankhya.extensions.actionbutton.ContextoAcao;
 import br.com.sankhya.extensions.actionbutton.Registro;
 import br.com.sankhya.jape.event.PersistenceEvent;

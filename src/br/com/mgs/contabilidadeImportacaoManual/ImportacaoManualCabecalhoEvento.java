@@ -1,3 +1,5 @@
+package br.com.mgs.contabilidadeImportacaoManual;
+
 import br.com.sankhya.bh.contabilidadeImportacaoManual.ImportacaoManualController;
 import br.com.sankhya.extensions.eventoprogramavel.EventoProgramavelJava;
 import br.com.sankhya.jape.event.PersistenceEvent;

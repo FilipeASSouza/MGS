@@ -1,3 +1,5 @@
+package br.com.mgs.contabilidadeImportacaoManual;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 

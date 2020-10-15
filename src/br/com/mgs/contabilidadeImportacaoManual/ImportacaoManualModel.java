@@ -1,6 +1,7 @@
+package br.com.mgs.contabilidadeImportacaoManual;
+
 import br.com.sankhya.bh.CentralNotasUtils;
 import br.com.sankhya.bh.TimeUtilsKt;
-import br.com.sankhya.bh.contabilidadeImportacaoManual.DadosPlanilhaPOJO;
 import br.com.sankhya.bh.dao.DynamicVOKt;
 import br.com.sankhya.bh.dao.EntityFacadeW;
 import br.com.sankhya.bh.dao.WrapperVO;
@@ -26,6 +27,8 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static com.sun.deploy.util.SessionState.save;
 
 public class ImportacaoManualModel {
     private Collection<DadosPlanilhaPOJO> dadoPlanilha = new ArrayList();
@@ -131,13 +134,13 @@ public class ImportacaoManualModel {
                 DynamicVO ad_tcbimpmaniteVO = (DynamicVO)element;
                 this.criarLote(ad_tcbimpmaniteVO.asTimestamp("DTREF"), ad_tcbimpmaniteVO.asBigDecimal("CODEMP"), ad_tcbimpmaniteVO.asBigDecimal("NUMLOTE"));
                 sequencia = ad_tcbimpmaniteVO.asInt("SEQUENCIA");
-                DynamicVO saveVO = ((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)lancamentoDAO.create().set("CODCTACTB", ad_tcbimpmaniteVO.asBigDecimal("CODCTACTB"))).set("NUMDOC", ad_tcbimpmaniteVO.asBigDecimal("DOCUMENTO"))).set("VLRLANC", ad_tcbimpmaniteVO.asBigDecimal("VALOR"))).set("TIPLANC", ad_tcbimpmaniteVO.asString("TIPLANC").equals("D") ? "D" : "R")).set("LIBERADO", "S")).set("CODHISTCTB", ad_tcbimpmaniteVO.asBigDecimal("CODHISTCTB"))).set("REFERENCIA", TimeUtilsKt.getMonthStart(ad_tcbimpmaniteVO.asTimestamp("DTREF")))).set("CODEMP", ad_tcbimpmaniteVO.asBigDecimal("CODEMP"))).set("CODUSU", this.codigoUsuario)).set("DTMOV", ad_tcbimpmaniteVO.asTimestamp("DTREF"))).set("NUMLOTE", ad_tcbimpmaniteVO.asBigDecimal("NUMLOTE"))).set("NUMLANC", ad_tcbimpmaniteVO.asBigDecimal("SEQUENCIA"))).set("COMPLHIST", ad_tcbimpmaniteVO.asString("COMPLHIST"))).set("CODCENCUS", ad_tcbimpmaniteVO.asBigDecimal("CODCENCUS"))).set("SEQUENCIA", new BigDecimal(i++))).set("CODPROJ", BigDecimal.ZERO)).save();
-                ((FluidUpdateVO)ad_tcbimpmaniteDAO.prepareToUpdate(ad_tcbimpmaniteVO).set("NUMLANC", saveVO.asBigDecimal("NUMLANC"))).update();
+                DynamicVO saveVO = lancamentoDAO.create().set("CODCTACTB", ad_tcbimpmaniteVO.asBigDecimal("CODCTACTB")).set("NUMDOC", ad_tcbimpmaniteVO.asBigDecimal("DOCUMENTO")).set("VLRLANC", ad_tcbimpmaniteVO.asBigDecimal("VALOR")).set("TIPLANC", ad_tcbimpmaniteVO.asString("TIPLANC").equals("D") ? "D" : "R").set("LIBERADO", "S").set("CODHISTCTB", ad_tcbimpmaniteVO.asBigDecimal("CODHISTCTB")).set("REFERENCIA", TimeUtilsKt.getMonthStart(ad_tcbimpmaniteVO.asTimestamp("DTREF"))).set("CODEMP", ad_tcbimpmaniteVO.asBigDecimal("CODEMP")).set("CODUSU", this.codigoUsuario).set("DTMOV", ad_tcbimpmaniteVO.asTimestamp("DTREF")).set("NUMLOTE", ad_tcbimpmaniteVO.asBigDecimal("NUMLOTE")).set("NUMLANC", ad_tcbimpmaniteVO.asBigDecimal("SEQUENCIA")).set("COMPLHIST", ad_tcbimpmaniteVO.asString("COMPLHIST")).set("CODCENCUS", ad_tcbimpmaniteVO.asBigDecimal("CODCENCUS")).set("SEQUENCIA", new BigDecimal(i++)).set("CODPROJ", ad_tcbimpmaniteVO.asBigDecimal("CODPROJ")).save();
+                ad_tcbimpmaniteDAO.prepareToUpdate(ad_tcbimpmaniteVO).set("NUMLANC", saveVO.asBigDecimal("NUMLANC")).update();
             }
 
-            ((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)JapeFactory.dao("AD_TCBIMPMANLOG").create().set("NUIMPMAN", this.numeroUnicoImportacaoManual)).set("DHREGISTRO", TimeUtils.getNow())).set("LOG", "Dados Contabeis lancandos")).save();
+            JapeFactory.dao("AD_TCBIMPMANLOG").create().set("NUIMPMAN", this.numeroUnicoImportacaoManual).set("DHREGISTRO", TimeUtils.getNow()).set("LOG", "Dados Contabeis lancandos").save();
         } catch (Exception var12) {
-            ErroUtils.disparaErro("Registro de Sequencia : " + Integer.toString(sequencia) + " Erro :" + var12.toString());
+            ErroUtils.disparaErro("Registro de Sequencia : " + sequencia + " Erro :" + var12.toString());
         }
 
     }
