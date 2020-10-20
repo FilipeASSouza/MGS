@@ -6,6 +6,8 @@
     <JAVADOC />
     <SOURCES>
       <root url="file://$PROJECT_DIR$/../modulos mgs" />
+      <root url="jar://$PROJECT_DIR$/../modulos mgs/AcaoJava.jar!/br/com/sankhya/bh/contabilidadeImportacaoManual" />
+      <root url="file://$PROJECT_DIR$/src/br/com/mgs/contabilidadeImportacaoManualPlanilha" />
     </SOURCES>
     <jarDirectory url="file://$PROJECT_DIR$/../modulos mgs" recursive="false" />
     <jarDirectory url="file://$PROJECT_DIR$/../modulos mgs" recursive="false" type="SOURCES" />

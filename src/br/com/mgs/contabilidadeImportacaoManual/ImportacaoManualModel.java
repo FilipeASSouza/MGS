@@ -1,11 +1,11 @@
 package br.com.mgs.contabilidadeImportacaoManual;
 
+import br.com.mgs.utils.ErroUtils;
 import br.com.sankhya.bh.CentralNotasUtils;
 import br.com.sankhya.bh.TimeUtilsKt;
 import br.com.sankhya.bh.dao.DynamicVOKt;
 import br.com.sankhya.bh.dao.EntityFacadeW;
 import br.com.sankhya.bh.dao.WrapperVO;
-import br.com.sankhya.bh.utils.ErroUtils;
 import br.com.sankhya.jape.EntityFacade;
 import br.com.sankhya.jape.dao.JdbcWrapper;
 import br.com.sankhya.jape.sql.NativeSql;
@@ -14,7 +14,6 @@ import br.com.sankhya.jape.vo.DynamicVO;
 import br.com.sankhya.jape.wrapper.JapeFactory;
 import br.com.sankhya.jape.wrapper.JapeWrapper;
 import br.com.sankhya.jape.wrapper.fluid.FluidCreateVO;
-import br.com.sankhya.jape.wrapper.fluid.FluidUpdateVO;
 import br.com.sankhya.modelcore.util.EntityFacadeFactory;
 import com.sankhya.util.TimeUtils;
 import jxl.Sheet;
@@ -28,7 +27,6 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static com.sun.deploy.util.SessionState.save;
 
 public class ImportacaoManualModel {
     private Collection<DadosPlanilhaPOJO> dadoPlanilha = new ArrayList();
@@ -104,16 +102,16 @@ public class ImportacaoManualModel {
             ErroUtils.disparaErro("Erro na linha: " + Integer.toString(numlinha + 1) + " Erro :" + var7.toString());
         }
 
-        ((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)JapeFactory.dao("AD_TCBIMPMANLOG").create().set("NUIMPMAN", this.numeroUnicoImportacaoManual)).set("DHREGISTRO", TimeUtils.getNow())).set("LOG", "Planilha Carregada")).save();
+        JapeFactory.dao("AD_TCBIMPMANLOG").create().set("NUIMPMAN", this.numeroUnicoImportacaoManual).set("DHREGISTRO", TimeUtils.getNow()).set("LOG", "Planilha Carregada").save();
         JapeWrapper ad_tcbimpmaniteDAO = JapeFactory.dao("AD_TCBIMPMANITE");
         Iterator var10 = this.dadoPlanilha.iterator();
 
         while(var10.hasNext()) {
             DadosPlanilhaPOJO dados = (DadosPlanilhaPOJO)var10.next();
-            ((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)ad_tcbimpmaniteDAO.create().set("NUIMPMAN", this.numeroUnicoImportacaoManual)).set("DOCUMENTO", dados.getDocumento())).set("NUMLOTE", dados.getNumeroDoLote())).set("DTREF", dados.getReferencia())).set("CODEMP", dados.getCodigoEmpresa())).set("CODCENCUS", dados.getCodigoCentroDeCusto())).set("CODNAT", dados.getCodigoNatureza())).set("CODSITE", dados.getCodigoSite())).set("CODCTACTB", dados.getCodigoContaContabilReduzida())).set("CODHISTCTB", dados.getCodigoHistoricoPadrao())).set("COMPLHIST", dados.getComplementoHistorico())).set("TIPLANC", dados.getTipoLancamento())).set("VALOR", dados.getValor())).set("CODPROJ", dados.getCodigoProjeto())).save();
+            ad_tcbimpmaniteDAO.create().set("NUIMPMAN", this.numeroUnicoImportacaoManual).set("DOCUMENTO", dados.getDocumento()).set("NUMLOTE", dados.getNumeroDoLote()).set("DTREF", dados.getReferencia()).set("CODEMP", dados.getCodigoEmpresa()).set("CODCENCUS", dados.getCodigoCentroDeCusto()).set("CODNAT", dados.getCodigoNatureza()).set("CODSITE", dados.getCodigoSite()).set("CODCTACTB", dados.getCodigoContaContabilReduzida()).set("CODHISTCTB", dados.getCodigoHistoricoPadrao()).set("COMPLHIST", dados.getComplementoHistorico()).set("TIPLANC", dados.getTipoLancamento()).set("VALOR", dados.getValor()).set("CODPROJ", dados.getCodigoProjeto()).save();
         }
 
-        ((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)JapeFactory.dao("AD_TCBIMPMANLOG").create().set("NUIMPMAN", this.numeroUnicoImportacaoManual)).set("DHREGISTRO", TimeUtils.getNow())).set("LOG", "Planilha salva na tela")).save();
+        JapeFactory.dao("AD_TCBIMPMANLOG").create().set("NUIMPMAN", this.numeroUnicoImportacaoManual).set("DHREGISTRO", TimeUtils.getNow()).set("LOG", "Planilha salva na tela").save();
     }
 
     public void gerarLancamentosContabeis() throws Exception {
@@ -225,7 +223,7 @@ public class ImportacaoManualModel {
                 resultRateio = sqlRateio.executeQuery();
 
                 while(resultRateio.next()) {
-                    ((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)((FluidCreateVO)rateioRecDesp.create().set("ORIGEM", "E")).set("NUFIN", notaDestino.asBigDecimal("NUNOTA"))).set("CODNAT", resultRateio.getBigDecimal("CODNAT"))).set("CODCENCUS", resultRateio.getBigDecimal("CODCENCUS"))).set("CODPROJ", resultRateio.getBigDecimal("CODPROJ"))).set("CODSITE", resultRateio.getBigDecimal("CODSITE"))).set("CODPARC", BigDecimal.ZERO)).set("PERCRATEIO", resultRateio.getBigDecimal("PERC"))).set("CODCTACTB", resultRateio.getBigDecimal("CODCTACTB"))).save();
+                    rateioRecDesp.create().set("ORIGEM", "E").set("NUFIN", notaDestino.asBigDecimal("NUNOTA")).set("CODNAT", resultRateio.getBigDecimal("CODNAT")).set("CODCENCUS", resultRateio.getBigDecimal("CODCENCUS")).set("CODPROJ", resultRateio.getBigDecimal("CODPROJ")).set("CODSITE", resultRateio.getBigDecimal("CODSITE")).set("CODPARC", BigDecimal.ZERO).set("PERCRATEIO", resultRateio.getBigDecimal("PERC")).set("CODCTACTB", resultRateio.getBigDecimal("CODCTACTB")).save();
                 }
 
                 NativeSql sqlUpdateIens = new NativeSql(jdbcWrapper);

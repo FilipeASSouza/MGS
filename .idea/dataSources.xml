@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="PRODUCAO" uuid="2122a25a-d738-46a7-85e1-b48e3415f585">
+    <data-source source="LOCAL" name="SANKHYA_DEV" uuid="8cf10526-e1bd-479e-bec9-3e474baba48e">
       <driver-ref>oracle</driver-ref>
       <synchronize>true</synchronize>
       <auto-commit>false</auto-commit>
       <jdbc-driver>oracle.jdbc.OracleDriver</jdbc-driver>
       <jdbc-url>jdbc:oracle:thin:@192.168.7.125:1521:orcl</jdbc-url>
     </data-source>
-    <data-source source="LOCAL" name="SANKHYA_TESTE" uuid="81a1c067-bb59-4927-ae07-422558274ab1">
+    <data-source source="LOCAL" name="SANKHYA_PROD" uuid="09c31707-aca7-439d-9df6-231fb570cbde">
       <driver-ref>oracle</driver-ref>
       <synchronize>true</synchronize>
       <auto-commit>false</auto-commit>
       <jdbc-driver>oracle.jdbc.OracleDriver</jdbc-driver>
       <jdbc-url>jdbc:oracle:thin:@192.168.7.125:1521:orcl</jdbc-url>
     </data-source>
-    <data-source source="LOCAL" name="DBA_SANKHYA" uuid="08cdb875-aba5-44a4-a96a-3097d571f6b6">
+    <data-source source="LOCAL" name="SANKHYA_TREINA" uuid="7d145d6e-62e2-4b92-8dcd-0ea13747ee95">
       <driver-ref>oracle</driver-ref>
       <synchronize>true</synchronize>
       <auto-commit>false</auto-commit>
       <jdbc-driver>oracle.jdbc.OracleDriver</jdbc-driver>
       <jdbc-url>jdbc:oracle:thin:@192.168.7.125:1521:orcl</jdbc-url>
     </data-source>
-    <data-source source="LOCAL" name="SANKHYA_TREINA" uuid="689282a7-ae18-4a9b-89c2-bf076ceab239">
+    <data-source source="LOCAL" name="SANKHYA_TESTE" uuid="1ee44d16-d214-4f4e-a114-7bcd1042031f">
       <driver-ref>oracle</driver-ref>
       <synchronize>true</synchronize>
       <auto-commit>false</auto-commit>
