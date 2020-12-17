@@ -2,5 +2,7 @@
 <project version="4">
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/../../../../FILIPE/QUERYS/ALTERANDO O CENTRO DE RESULTADO E O CONTRATO.sql" dialect="Oracle" />
+    <file url="file://$PROJECT_DIR$/../../../../FILIPE/QUERYS/RAZAO POR UNIDADE FATURAMENTO.sql" dialect="GenericSQL" />
+    <file url="PROJECT" dialect="Oracle" />
   </component>
 </project>

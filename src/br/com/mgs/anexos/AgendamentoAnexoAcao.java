@@ -1,6 +1,8 @@
 package br.com.mgs.anexos;
 
 import br.com.mgs.utils.NativeSqlDecorator;
+import br.com.sankhya.extensions.actionbutton.AcaoRotinaJava;
+import br.com.sankhya.extensions.actionbutton.ContextoAcao;
 import br.com.sankhya.jape.vo.DynamicVO;
 import br.com.sankhya.jape.wrapper.JapeFactory;
 import br.com.sankhya.jape.wrapper.JapeWrapper;
@@ -8,14 +10,13 @@ import br.com.sankhya.jape.wrapper.fluid.FluidCreateVO;
 import br.com.sankhya.modelcore.util.SWRepositoryUtils;
 import com.sankhya.util.TimeUtils;
 import org.apache.commons.io.FileUtils;
-import org.cuckoo.core.ScheduledAction;
-import org.cuckoo.core.ScheduledActionContext;
 
 import java.io.File;
 import java.math.BigDecimal;
 
-public class AgendamentoAnexo implements ScheduledAction {
-    private NativeSqlDecorator listaPendenciasNSD;
+public class AgendamentoAnexoAcao implements AcaoRotinaJava {
+
+    private NativeSqlDecorator listaPendenciasNSD = null;
     private BigDecimal numeroUnicoAnexoOrigem;
     private String chaveArquivo;
     private File file;
@@ -24,17 +25,17 @@ public class AgendamentoAnexo implements ScheduledAction {
     private BigDecimal numeroUnicoNota;
 
     @Override
-    public void onTime(ScheduledActionContext scheduledActionContext){
+    public void doAction(ContextoAcao contextoAcao) throws Exception {
         try {
-            this.processar();
+            processar();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void processar() throws Exception {
-        this.carregarBaseProcessamento();
-        this.percorrerlistadePendencias();
+        carregarBaseProcessamento();
+        percorrerlistadePendencias();
     }
 
 
@@ -45,15 +46,15 @@ public class AgendamentoAnexo implements ScheduledAction {
     private void percorrerlistadePendencias() throws Exception {
         while(listaPendenciasNSD.proximo()){
             numeroUnicoAnexoOrigem = listaPendenciasNSD.getValorBigDecimal("NUATTACH");
-            this.copiarAnexo();
+            copiarAnexo();
         }
     }
 
     private void copiarAnexo() throws Exception {
-        this.carregarDadosAnexo();
-        this.carregarArquivo();
-        this.criaAnexoDestino();
-        this.registraVinculoAnexos();
+        carregarDadosAnexo();
+        carregarArquivo();
+        criaAnexoDesitno();
+        registraVinculoAnexos();
     }
 
     private void registraVinculoAnexos() throws Exception {
@@ -71,7 +72,7 @@ public class AgendamentoAnexo implements ScheduledAction {
         file = new File(caminhoArquivo);
     }
 
-    private void criaAnexoDestino() throws Exception {
+    private void criaAnexoDesitno() throws Exception {
 
         JapeWrapper anexoDAO = JapeFactory.dao("Anexo");
         FluidCreateVO anexoFCVO = anexoDAO.create();
@@ -82,13 +83,13 @@ public class AgendamentoAnexo implements ScheduledAction {
         anexoFCVO.set("TIPOCONTEUDO","P");
         anexoFCVO.set("TIPO","N");
         anexoFCVO.set("CODUSU", BigDecimal.ZERO);
-        anexoFCVO.set("CONTEUDO",FileUtils.readFileToByteArray(file));
+        anexoFCVO.set("CONTEUDO", FileUtils.readFileToByteArray(file));
         anexoFCVO.set("PUBLICO","N");
-        anexoFCVO.set("SEQUENCIAPR", BigDecimal.ZERO);
-        anexoFCVO.set("SEQUENCIA", BigDecimal.ZERO);
-        anexoFCVO.set("DTINCLUSAO",TimeUtils.getNow());
-        anexoFCVO.set("CODATA", numeroUnicoNota);
-        anexoFCVO.set("AD_TIPINCLUSAO", String.valueOf(1));
+        anexoFCVO.set("SEQUENCIAPR", BigDecimal.ZERO );
+        anexoFCVO.set("SEQUENCIA", BigDecimal.ZERO );
+        anexoFCVO.set("DTINCLUSAO",TimeUtils.getNow() );
+        anexoFCVO.set("CODATA", numeroUnicoNota );
+        anexoFCVO.set("AD_TIPINCLUSAO", String.valueOf(1) );
         anexoFCVO.set("AD_NUATTACH", numeroUnicoAnexoOrigem );
         anexoFCVO.set("AD_CODUSUJOB", BigDecimal.ZERO );
 
@@ -100,9 +101,9 @@ public class AgendamentoAnexo implements ScheduledAction {
     private void carregarDadosAnexo() throws Exception {
         JapeWrapper anexoSistemaDAO = JapeFactory.dao("AnexoSistema");
         DynamicVO anexoSistemaVO = anexoSistemaDAO.findByPK(numeroUnicoAnexoOrigem);
-        DynamicVO financeiroVO = JapeFactory.dao("Financeiro").findByPK(anexoSistemaVO.asString("PKREGISTRO").replace("_Financeiro",""));
+        DynamicVO finVO = JapeFactory.dao("Financeiro").findByPK(anexoSistemaVO.asString("PKREGISTRO").replace("_Financeiro",""));
         chaveArquivo = anexoSistemaVO.asString("CHAVEARQUIVO");
         nomeArquivoOrigem = anexoSistemaVO.asString("NOMEARQUIVO");
-        numeroUnicoNota = financeiroVO.asBigDecimal("NUNOTA");
+        numeroUnicoNota = finVO.asBigDecimal("NUNOTA");
     }
 }

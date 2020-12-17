@@ -20,84 +20,76 @@ public class NativeSqlDecorator {
     private boolean aberto = false;
     ResultSet resultSet;
 
-
-
     private NativeSqlDecorator() {
-
     }
 
-    public NativeSqlDecorator(String sql){
-        iniciar();
-        nativeSql.appendSql(sql);
+    public NativeSqlDecorator(String sql) {
+        this.iniciar();
+        this.nativeSql.appendSql(sql);
     }
-
 
     public boolean proximo() throws Exception {
-        if (!aberto){
-            executar();
-            aberto = true;
+        if (!this.aberto) {
+            this.executar();
+            this.aberto = true;
         }
-        return resultSet.next();
+
+        return this.resultSet.next();
     }
 
     public boolean loop() throws Exception {
-        return proximo();
+        return this.proximo();
     }
-
 
     public NativeSqlDecorator(Object objetobase, String arquivo) throws Exception {
-        iniciar();
-
-        //nativeSql.appendSql(getSqlResource(objetobase, arquivo));
-        nativeSql.loadSql(objetobase.getClass(), arquivo);
+        this.iniciar();
+        this.nativeSql.loadSql(objetobase.getClass(), arquivo);
     }
 
-    public NativeSqlDecorator setParametro(String nome, Object valor){
-        nativeSql.setNamedParameter(nome, valor);
+    public NativeSqlDecorator setParametro(String nome, Object valor) {
+        this.nativeSql.setNamedParameter(nome, valor);
         return this;
     }
 
     public BigDecimal getValorBigDecimal(String campo) throws Exception {
-        return resultSet.getBigDecimal(campo);
+        return this.resultSet.getBigDecimal(campo);
     }
 
     public String getValorString(String campo) throws Exception {
-        return resultSet.getString(campo);
+        return this.resultSet.getString(campo);
     }
 
     private Boolean getValorBoolean(String campo) throws Exception {
-        return resultSet.getBoolean(campo);
+        return this.resultSet.getBoolean(campo);
     }
 
     public Timestamp getValorTimestamp(String campo) throws Exception {
-        return resultSet.getTimestamp(campo);
+        return this.resultSet.getTimestamp(campo);
     }
 
     public int getValorInt(String campo) throws Exception {
-        return resultSet.getInt(campo);
+        return this.resultSet.getInt(campo);
     }
 
     private float getValorFloat(String campo) throws Exception {
-        return resultSet.getFloat(campo);
+        return this.resultSet.getFloat(campo);
     }
 
-
-    private void iniciar(){
-        nativeSql = new NativeSql(EntityFacadeFactory.getDWFFacade().getJdbcWrapper());
+    private void iniciar() {
+        this.nativeSql = new NativeSql(EntityFacadeFactory.getDWFFacade().getJdbcWrapper());
     }
 
     public void executar() throws Exception {
-        resultSet = nativeSql.executeQuery();
-        if (resultSet != null ){
-            aberto = true;
+        this.resultSet = this.nativeSql.executeQuery();
+        if (this.resultSet != null) {
+            this.aberto = true;
         }
+
     }
 
     public void atualizar() throws Exception {
-        nativeSql.executeUpdate();
-
+        this.nativeSql.executeUpdate();
     }
-
 
     private String getSqlResource(Object objetobase, String arquivo) throws Exception {
         InputStream in = objetobase.getClass().getResourceAsStream(arquivo);

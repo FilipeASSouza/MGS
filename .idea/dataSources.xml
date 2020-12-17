@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="SANKHYA_DEV" uuid="8cf10526-e1bd-479e-bec9-3e474baba48e">
-      <driver-ref>oracle</driver-ref>
-      <synchronize>true</synchronize>
-      <auto-commit>false</auto-commit>
-      <jdbc-driver>oracle.jdbc.OracleDriver</jdbc-driver>
-      <jdbc-url>jdbc:oracle:thin:@192.168.7.125:1521:orcl</jdbc-url>
-    </data-source>
     <data-source source="LOCAL" name="SANKHYA_PROD" uuid="09c31707-aca7-439d-9df6-231fb570cbde">
       <driver-ref>oracle</driver-ref>
       <synchronize>true</synchronize>

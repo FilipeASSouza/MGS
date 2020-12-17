@@ -14,7 +14,7 @@ public class BloqueioAnexoController {
         DynamicVO finVO = JapeFactory.dao("Financeiro").findByPK(nufin);
         DynamicVO cabVO = JapeFactory.dao("CabecalhoNota").findByPK(finVO.asBigDecimal("NUNOTA"));
         JapeWrapper fechaDAO = JapeFactory.dao("BHBLCFechamentoRotinas");
-        DynamicVO empVO = fechaDAO.findOne("CODTIPOPER = ?", new Object[]{cabVO.asBigDecimal("CODTIPOPER")});
+        DynamicVO empVO = fechaDAO.findOne("CODTIPOPER = ?", new Object[]{finVO.asBigDecimal("CODTIPOPERBAIXA")});
         DynamicVO tipVO = fechaDAO.findOne("TIPMOV = ?", new Object[]{cabVO.asString("TIPMOV")});
         if (empVO != null) {
             if ("N".equals(empVO.asString("ATIVO"))) {
