@@ -1,6 +1,7 @@
 package br.com.mgs.anexos;
 
 import br.com.mgs.utils.NativeSqlDecorator;
+import br.com.sankhya.jape.util.JapeSessionContext;
 import br.com.sankhya.jape.vo.DynamicVO;
 import br.com.sankhya.jape.wrapper.JapeFactory;
 import br.com.sankhya.jape.wrapper.JapeWrapper;
@@ -10,31 +11,46 @@ import com.sankhya.util.TimeUtils;
 import org.apache.commons.io.FileUtils;
 import org.cuckoo.core.ScheduledAction;
 import org.cuckoo.core.ScheduledActionContext;
+import org.springframework.jms.IllegalStateException;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 public class AgendamentoAnexo implements ScheduledAction {
-    private NativeSqlDecorator listaPendenciasNSD;
+    private NativeSqlDecorator listaPendenciasNSD = null;
     private BigDecimal numeroUnicoAnexoOrigem;
     private String chaveArquivo;
     private File file;
     private BigDecimal numeroUnicoAnexoDestino;
     private String nomeArquivoOrigem;
     private BigDecimal numeroUnicoNota;
+    private String descricaoArquivo;
 
     @Override
     public void onTime(ScheduledActionContext scheduledActionContext){
+
         try {
+            this.setup();
             this.processar();
+        } catch (IllegalStateException r){
+            r.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    public void setup() {
+        JapeSessionContext.putProperty("usuario_logado", BigDecimal.ZERO);
+        JapeSessionContext.putProperty("emp_usu_logado", (Object)null);
+        JapeSessionContext.putProperty("dh_atual", new Timestamp(System.currentTimeMillis()));
+        JapeSessionContext.putProperty("d_atual", new Timestamp(TimeUtils.getToday()));
+    }
+
+
     private void processar() throws Exception {
-        this.carregarBaseProcessamento();
-        this.percorrerlistadePendencias();
+        carregarBaseProcessamento();
+        percorrerlistadePendencias();
     }
 
 
@@ -45,15 +61,15 @@ public class AgendamentoAnexo implements ScheduledAction {
     private void percorrerlistadePendencias() throws Exception {
         while(listaPendenciasNSD.proximo()){
             numeroUnicoAnexoOrigem = listaPendenciasNSD.getValorBigDecimal("NUATTACH");
-            this.copiarAnexo();
+            copiarAnexo();
         }
     }
 
     private void copiarAnexo() throws Exception {
-        this.carregarDadosAnexo();
-        this.carregarArquivo();
-        this.criaAnexoDestino();
-        this.registraVinculoAnexos();
+        carregarDadosAnexo();
+        carregarArquivo();
+        criaAnexoDestino();
+        registraVinculoAnexos();
     }
 
     private void registraVinculoAnexos() throws Exception {
@@ -78,10 +94,10 @@ public class AgendamentoAnexo implements ScheduledAction {
         anexoFCVO.set("DTALTER", TimeUtils.getNow());
         anexoFCVO.set("EDITA","N");
         anexoFCVO.set("ARQUIVO",  nomeArquivoOrigem );
-        anexoFCVO.set("DESCRICAO",numeroUnicoAnexoOrigem.toString()+"-"+nomeArquivoOrigem);
+        anexoFCVO.set("DESCRICAO",descricaoArquivo);
         anexoFCVO.set("TIPOCONTEUDO","P");
         anexoFCVO.set("TIPO","N");
-        anexoFCVO.set("CODUSU", BigDecimal.ZERO);
+        anexoFCVO.set("CODUSU", BigDecimal.valueOf(0L));
         anexoFCVO.set("CONTEUDO",FileUtils.readFileToByteArray(file));
         anexoFCVO.set("PUBLICO","N");
         anexoFCVO.set("SEQUENCIAPR", BigDecimal.ZERO);
@@ -104,5 +120,6 @@ public class AgendamentoAnexo implements ScheduledAction {
         chaveArquivo = anexoSistemaVO.asString("CHAVEARQUIVO");
         nomeArquivoOrigem = anexoSistemaVO.asString("NOMEARQUIVO");
         numeroUnicoNota = financeiroVO.asBigDecimal("NUNOTA");
+        descricaoArquivo = anexoSistemaVO.asString("DESCRICAO");
     }
 }

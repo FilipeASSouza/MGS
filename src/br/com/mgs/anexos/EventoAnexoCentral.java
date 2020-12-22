@@ -35,10 +35,19 @@ public class EventoAnexoCentral implements EventoProgramavelJava {
         } else if ( vo.asString("AD_TIPINCLUSAO") != null
                 && this.vo.asString("AD_TIPINCLUSAO").equalsIgnoreCase(String.valueOf(1))) {
             this.financeiroVO = this.financeiroDAO.findOne("NUNOTA = ?", new Object[]{this.vo.asBigDecimal("CODATA")});
-            if (BloqueioAnexoController.validaReferencia(this.financeiroVO.asBigDecimal("NUFIN"))) {
-                ErroUtils.disparaErro("Periodo contábil fechado, anexo não pode ser alterado ! ");
-            } else if (this.usuarioVO.asString("AD_LIBEXCLUIANEXO") == null || this.usuarioVO.asString("AD_LIBEXCLUIANEXO").equals(String.valueOf("N"))) {
-                ErroUtils.disparaErro("Titulo vencido, usuário sem permissão para alterar anexo! ");
+            this.usuarioVO = this.usuarioDAO.findByPK(new Object[]{AuthenticationInfo.getCurrent().getUserID()});
+
+            if( this.sdf.format(financeiroVO.asTimestamp("DTVENC")).compareTo(this.sdf.format(TimeUtils.getNow()) ) < 0 ){
+                if ( this.usuarioVO.asString("AD_LIBEXCLUIANEXO") == null
+                        || this.usuarioVO.asString("AD_LIBEXCLUIANEXO").equals(String.valueOf("N")) ) {
+                    ErroUtils.disparaErro("Titulo vencido, usuário sem permissão para alterar anexo! ");
+                }
+                if (BloqueioAnexoController.validaReferencia(this.financeiroVO.asBigDecimal("NUFIN"))) {
+                    if( ( usuarioVO.asString("AD_LIBEXCLUIANEXOCONTABIL") == null
+                            || this.usuarioVO.asString("AD_LIBEXCLUIANEXOCONTABIL").equals(String.valueOf("N"))) ){
+                        ErroUtils.disparaErro("Periodo contábil fechado, anexo não pode ser alterado ! ");
+                    }
+                }
             }
         }
     }

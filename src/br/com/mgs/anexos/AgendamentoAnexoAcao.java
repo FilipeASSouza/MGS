@@ -23,6 +23,7 @@ public class AgendamentoAnexoAcao implements AcaoRotinaJava {
     private BigDecimal numeroUnicoAnexoDestino;
     private String nomeArquivoOrigem;
     private BigDecimal numeroUnicoNota;
+    private String descricaoArquivo;
 
     @Override
     public void doAction(ContextoAcao contextoAcao) throws Exception {
@@ -79,7 +80,7 @@ public class AgendamentoAnexoAcao implements AcaoRotinaJava {
         anexoFCVO.set("DTALTER", TimeUtils.getNow());
         anexoFCVO.set("EDITA","N");
         anexoFCVO.set("ARQUIVO",  nomeArquivoOrigem );
-        anexoFCVO.set("DESCRICAO",numeroUnicoAnexoOrigem.toString()+"-"+nomeArquivoOrigem);
+        anexoFCVO.set("DESCRICAO", descricaoArquivo);
         anexoFCVO.set("TIPOCONTEUDO","P");
         anexoFCVO.set("TIPO","N");
         anexoFCVO.set("CODUSU", BigDecimal.ZERO);
@@ -105,5 +106,6 @@ public class AgendamentoAnexoAcao implements AcaoRotinaJava {
         chaveArquivo = anexoSistemaVO.asString("CHAVEARQUIVO");
         nomeArquivoOrigem = anexoSistemaVO.asString("NOMEARQUIVO");
         numeroUnicoNota = finVO.asBigDecimal("NUNOTA");
+        descricaoArquivo = anexoSistemaVO.asString("DESCRICAO");
     }
 }
