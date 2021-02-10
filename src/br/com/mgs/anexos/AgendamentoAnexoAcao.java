@@ -24,12 +24,21 @@ public class AgendamentoAnexoAcao implements AcaoRotinaJava {
     private String nomeArquivoOrigem;
     private BigDecimal numeroUnicoNota;
     private String descricaoArquivo;
+    private JapeWrapper apoioAnexoLogDAO = JapeFactory.dao("AD_ANEXOTSIATAETSIANXLOG");
 
     @Override
     public void doAction(ContextoAcao contextoAcao) throws Exception {
         try {
             processar();
         } catch (Exception e) {
+            FluidCreateVO apoioAnexoLogFCVO = apoioAnexoLogDAO.create();
+            apoioAnexoLogFCVO.set("NUATTACH", numeroUnicoAnexoOrigem );
+            apoioAnexoLogFCVO.set("STATUS", e.getMessage() + " Nufin: " + nomeArquivoOrigem.substring(0,7) );
+            try {
+                apoioAnexoLogFCVO.save();
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
             e.printStackTrace();
         }
     }
@@ -75,28 +84,31 @@ public class AgendamentoAnexoAcao implements AcaoRotinaJava {
 
     private void criaAnexoDesitno() throws Exception {
 
-        JapeWrapper anexoDAO = JapeFactory.dao("Anexo");
-        FluidCreateVO anexoFCVO = anexoDAO.create();
-        anexoFCVO.set("DTALTER", TimeUtils.getNow());
-        anexoFCVO.set("EDITA","N");
-        anexoFCVO.set("ARQUIVO",  nomeArquivoOrigem );
-        anexoFCVO.set("DESCRICAO", descricaoArquivo);
-        anexoFCVO.set("TIPOCONTEUDO","P");
-        anexoFCVO.set("TIPO","N");
-        anexoFCVO.set("CODUSU", BigDecimal.ZERO);
-        anexoFCVO.set("CONTEUDO", FileUtils.readFileToByteArray(file));
-        anexoFCVO.set("PUBLICO","N");
-        anexoFCVO.set("SEQUENCIAPR", BigDecimal.ZERO );
-        anexoFCVO.set("SEQUENCIA", BigDecimal.ZERO );
-        anexoFCVO.set("DTINCLUSAO",TimeUtils.getNow() );
-        anexoFCVO.set("CODATA", numeroUnicoNota );
-        anexoFCVO.set("AD_TIPINCLUSAO", String.valueOf(1) );
-        anexoFCVO.set("AD_NUATTACH", numeroUnicoAnexoOrigem );
-        anexoFCVO.set("AD_CODUSUJOB", BigDecimal.ZERO );
+        if( nomeArquivoOrigem != null ){
 
-        DynamicVO save = anexoFCVO.save();
-        numeroUnicoAnexoDestino = save.asBigDecimal("CODATA");
+            JapeWrapper anexoDAO = JapeFactory.dao("Anexo");
+            FluidCreateVO anexoFCVO = anexoDAO.create();
+            anexoFCVO.set("DTALTER", TimeUtils.getNow());
+            anexoFCVO.set("EDITA","N");
+            anexoFCVO.set("ARQUIVO",  nomeArquivoOrigem );
+            anexoFCVO.set("DESCRICAO", descricaoArquivo.length() > 40 ? descricaoArquivo.substring(0, 40) : descricaoArquivo );
+            anexoFCVO.set("TIPOCONTEUDO","P");
+            anexoFCVO.set("TIPO","N");
+            anexoFCVO.set("CODUSU", BigDecimal.ZERO);
+            anexoFCVO.set("CONTEUDO", FileUtils.readFileToByteArray(file));
+            anexoFCVO.set("PUBLICO","N");
+            anexoFCVO.set("SEQUENCIAPR", BigDecimal.ZERO );
+            anexoFCVO.set("SEQUENCIA", BigDecimal.ZERO );
+            anexoFCVO.set("DTINCLUSAO",TimeUtils.getNow() );
+            anexoFCVO.set("CODATA", numeroUnicoNota );
+            anexoFCVO.set("AD_TIPINCLUSAO", String.valueOf(1) );
+            anexoFCVO.set("AD_NUATTACH", numeroUnicoAnexoOrigem );
+            anexoFCVO.set("AD_CODUSUJOB", BigDecimal.ZERO );
 
+            DynamicVO save = anexoFCVO.save();
+            numeroUnicoAnexoDestino = save.asBigDecimal("CODATA");
+
+        }
     }
 
     private void carregarDadosAnexo() throws Exception {

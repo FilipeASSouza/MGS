@@ -21,13 +21,14 @@ public class EventoAnexo implements EventoProgramavelJava {
     public void beforeInsert(PersistenceEvent persistenceEvent) throws Exception {
 
         DynamicVO vo = (DynamicVO)persistenceEvent.getVo();
+
         this.numeroUnicoFinanceiroOrig = vo.asString("PKREGISTRO").replace(String.valueOf("_Financeiro"), String.valueOf(""));
         if (vo.asString("NOMEINSTANCIA").equalsIgnoreCase(String.valueOf("Financeiro"))) {
             DynamicVO financeiroVO = JapeFactory.dao("Financeiro").findOne("NUFIN = ?", new Object[]{this.numeroUnicoFinanceiroOrig});
             if (financeiroVO.asBigDecimal("NUNOTA") != null) {
                 if( this.sdf.format(financeiroVO.asTimestamp("DTVENC")).compareTo(this.sdf.format(TimeUtils.getNow())) < 0 ){
                     DynamicVO usuarioVO = JapeFactory.dao("Usuario").findByPK(new Object[]{vo.asBigDecimal("CODUSU")});
-                    if (usuarioVO.asString("AD_LIBEXCLUIANEXO") != null
+                    if ( usuarioVO.asString("AD_LIBEXCLUIANEXO") != null
                             && usuarioVO.asString("AD_LIBEXCLUIANEXO").equals(String.valueOf("N"))) {
                         ErroUtils.disparaErro("Titulo vencido, usuário não possui permissão para anexar! ");
                     }
@@ -69,6 +70,7 @@ public class EventoAnexo implements EventoProgramavelJava {
     public void beforeDelete(PersistenceEvent persistenceEvent) throws Exception {
 
         DynamicVO vo = (DynamicVO)persistenceEvent.getVo();
+
         this.numeroUnicoFinanceiroOrig = vo.asString("PKREGISTRO").replace(String.valueOf("_Financeiro"), String.valueOf(""));
         if (vo.asString("NOMEINSTANCIA").equalsIgnoreCase(String.valueOf("Financeiro"))) {
             DynamicVO financeiroVO = JapeFactory.dao("Financeiro").findOne("NUFIN = ?", new Object[]{this.numeroUnicoFinanceiroOrig});

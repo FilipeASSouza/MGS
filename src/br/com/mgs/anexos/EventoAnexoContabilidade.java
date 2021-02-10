@@ -4,7 +4,7 @@ import br.com.sankhya.extensions.eventoprogramavel.EventoProgramavelJava;
 import br.com.sankhya.jape.event.PersistenceEvent;
 import br.com.sankhya.jape.event.TransactionContext;
 
-import static br.com.mgs.anexos.RegraAnexoContabilidade.validarAnexoImportacaoPlanilhaLotesContabeis;
+import static br.com.mgs.anexos.RegrasAnexoContabilidade.validarAnexoImportacaoPlanilhaLotesContabeis;
 
 public class EventoAnexoContabilidade implements EventoProgramavelJava {
     @Override

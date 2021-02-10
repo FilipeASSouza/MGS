@@ -10,7 +10,7 @@ import br.com.sankhya.modelcore.auth.AuthenticationInfo;
 import java.util.Collection;
 import java.util.Iterator;
 
-public class RegraAnexoContabilidade {
+public class RegrasAnexoContabilidade {
 
     private static String numeroUnico;
     private static JapeWrapper importacaoPlanilhaITEDAO = JapeFactory.dao("AD_TCBIMPMANITE"); //AD_TCBIMPMANITE
@@ -37,15 +37,18 @@ public class RegraAnexoContabilidade {
 
                 // Verificando a situação do lote e a data de competencia "Fechado"
 
-                DynamicVO mestreLoteVO = mestreLotesDAO.findOne("CODEMP = ? AND REFERENCIA = ? AND NUMLOTE = ? "
-                        , new Object[]{ importacaoPlanilhaITE.asBigDecimal("CODEMP"), lancamentosContabeisVO.asTimestamp("REFERENCIA")
-                        , importacaoPlanilhaITE.asBigDecimal("NUMLOTE")});
+                if(lancamentosContabeisVO != null){
 
-                DynamicVO usuarioVO = usuariosDAO.findByPK(AuthenticationInfo.getCurrent().getUserID());
+                    DynamicVO mestreLoteVO = mestreLotesDAO.findOne("CODEMP = ? AND REFERENCIA = ? AND NUMLOTE = ? "
+                            , new Object[]{ importacaoPlanilhaITE.asBigDecimal("CODEMP"), lancamentosContabeisVO.asTimestamp("REFERENCIA")
+                            , importacaoPlanilhaITE.asBigDecimal("NUMLOTE")});
 
-                if( mestreLoteVO != null && mestreLoteVO.asString("SITUACAO").equalsIgnoreCase(String.valueOf("F"))
-                        & ( usuarioVO.asString("AD_LIBEXCLUIANEXOCONTABIL") == null || usuarioVO.asString("AD_LIBEXCLUIANEXOCONTABIL").equalsIgnoreCase(String.valueOf("N"))) ){
-                    ErroUtils.disparaErro("Periodo contabil fechado, fineza verificar!");
+                    DynamicVO usuarioVO = usuariosDAO.findByPK(AuthenticationInfo.getCurrent().getUserID());
+
+                    if( mestreLoteVO != null && mestreLoteVO.asString("SITUACAO").equalsIgnoreCase(String.valueOf("F"))
+                            & ( usuarioVO.asString("AD_LIBEXCLUIANEXOCONTABIL") == null || usuarioVO.asString("AD_LIBEXCLUIANEXOCONTABIL").equalsIgnoreCase(String.valueOf("N"))) ){
+                        ErroUtils.disparaErro("Periodo contabil fechado, fineza verificar!");
+                    }
                 }
             }
         }

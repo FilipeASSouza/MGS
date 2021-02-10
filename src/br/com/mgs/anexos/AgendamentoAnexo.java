@@ -26,6 +26,7 @@ public class AgendamentoAnexo implements ScheduledAction {
     private String nomeArquivoOrigem;
     private BigDecimal numeroUnicoNota;
     private String descricaoArquivo;
+    private JapeWrapper apoioAnexoLogDAO = JapeFactory.dao("AD_ANEXOTSIATAETSIANXLOG");
 
     @Override
     public void onTime(ScheduledActionContext scheduledActionContext){
@@ -36,6 +37,14 @@ public class AgendamentoAnexo implements ScheduledAction {
         } catch (IllegalStateException r){
             r.printStackTrace();
         } catch (Exception e) {
+            FluidCreateVO apoioAnexoLogFCVO = apoioAnexoLogDAO.create();
+            apoioAnexoLogFCVO.set("NUATTACH", numeroUnicoAnexoOrigem );
+            apoioAnexoLogFCVO.set("STATUS", e.getMessage() + " Nufin: " + nomeArquivoOrigem.substring(0,7) );
+            try {
+                apoioAnexoLogFCVO.save();
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
             e.printStackTrace();
         }
     }
@@ -89,16 +98,18 @@ public class AgendamentoAnexo implements ScheduledAction {
 
     private void criaAnexoDestino() throws Exception {
 
+        if( nomeArquivoOrigem != null ){
+
         JapeWrapper anexoDAO = JapeFactory.dao("Anexo");
         FluidCreateVO anexoFCVO = anexoDAO.create();
         anexoFCVO.set("DTALTER", TimeUtils.getNow());
         anexoFCVO.set("EDITA","N");
         anexoFCVO.set("ARQUIVO",  nomeArquivoOrigem );
-        anexoFCVO.set("DESCRICAO",descricaoArquivo);
+        anexoFCVO.set("DESCRICAO", descricaoArquivo.length() > 40 ? descricaoArquivo.substring(0, 40) : descricaoArquivo );
         anexoFCVO.set("TIPOCONTEUDO","P");
         anexoFCVO.set("TIPO","N");
         anexoFCVO.set("CODUSU", BigDecimal.valueOf(0L));
-        anexoFCVO.set("CONTEUDO",FileUtils.readFileToByteArray(file));
+        anexoFCVO.set("CONTEUDO", FileUtils.readFileToByteArray(file));
         anexoFCVO.set("PUBLICO","N");
         anexoFCVO.set("SEQUENCIAPR", BigDecimal.ZERO);
         anexoFCVO.set("SEQUENCIA", BigDecimal.ZERO);
@@ -111,6 +122,7 @@ public class AgendamentoAnexo implements ScheduledAction {
         DynamicVO save = anexoFCVO.save();
         numeroUnicoAnexoDestino = save.asBigDecimal("CODATA");
 
+        }
     }
 
     private void carregarDadosAnexo() throws Exception {
