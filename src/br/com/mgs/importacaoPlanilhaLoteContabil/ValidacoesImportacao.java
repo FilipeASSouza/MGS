@@ -1,7 +1,7 @@
 package br.com.mgs.importacaoPlanilhaLoteContabil;
 
 import br.com.mgs.utils.ErroUtils;
-import br.com.sankhya.bh.utils.NativeSqlDecorator;
+import br.com.mgs.utils.NativeSqlDecorator;
 import br.com.sankhya.jape.event.PersistenceEvent;
 import br.com.sankhya.jape.vo.DynamicVO;
 import br.com.sankhya.jape.wrapper.JapeFactory;
@@ -150,7 +150,8 @@ public class ValidacoesImportacao {
         if( lancamentosContabeisVO != null ){
 
             NativeSqlDecorator mestreLote = new NativeSqlDecorator("SELECT SITUACAO FROM TCBLOT WHERE CODEMP = :CODEMP " +
-                    "AND TO_CHAR( REFERENCIA, 'YYYYMM' ) = :REFERENCIA AND NUMLOTE = :NUMLOTE ");
+                    " AND TO_CHAR( REFERENCIA, 'YYYYMM' ) = :REFERENCIA " +
+                    " AND NUMLOTE = :NUMLOTE ");
             mestreLote.setParametro("CODEMP", vo.asBigDecimal("CODEMP"));
             mestreLote.setParametro("REFERENCIA", TimeUtils.getYearMonth(vo.asTimestamp("DTREF")));
             mestreLote.setParametro("NUMLOTE", vo.asBigDecimal("NUMLOTE"));
