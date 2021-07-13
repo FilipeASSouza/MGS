@@ -10,5 +10,6 @@
     <orderEntry type="library" name="bibliotecas sankhya" level="project" />
     <orderEntry type="library" name="modulos mgs" level="project" />
     <orderEntry type="library" name="ejb sankhya" level="project" />
+    <orderEntry type="library" name="outros modulos" level="project" />
   </component>
 </module>

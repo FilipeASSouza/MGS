@@ -138,7 +138,7 @@ public class ValidacoesImportacao {
 
     public static void validaAtualizacaoImportacaoPlanilhaLoteContabilItem ( PersistenceEvent persistenceEvent ) throws Exception{
 
-        DynamicVO vo = (DynamicVO) persistenceEvent.getVo();
+        DynamicVO vo = (DynamicVO) persistenceEvent.getModifingFields();
 
         DynamicVO lancamentosContabeisVO = lancamentosContabeisDAO.findOne("NUMDOC = ? AND SEQUENCIA = ? " +
                         "AND NUMLOTE = ? AND CODCTACTB = ? "
