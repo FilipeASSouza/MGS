@@ -15,11 +15,11 @@ public class automacaoImpostoCancelamento implements EventoProgramavelJava {
 
     @Override
     public void beforeUpdate(PersistenceEvent persistenceEvent) throws Exception {
-        Boolean confirmando = (Boolean) JapeSession.getProperty("CabecalhoNota.confirmando.nota");
+        boolean confirmando = (Boolean) JapeSession.getProperty("CabecalhoNota.confirmando.nota", Boolean.FALSE );
         DynamicVO vo = (DynamicVO) persistenceEvent.getVo();
 
         if( vo.asBigDecimal("CODTIPOPER").equals(BigDecimal.valueOf(900L))
-            && confirmando != null ){
+            && confirmando ){
             DynamicVO notaOrigemVO = JapeFactory.dao("CompraVendavariosPedido").findOne("NUNOTA = ?", new Object[]{vo.asBigDecimal("NUNOTA")});
             if( notaOrigemVO != null){
                 DynamicVO notaVO = JapeFactory.dao("CabecalhoNota").findByPK(notaOrigemVO.asBigDecimal("NUNOTAORIG"));
