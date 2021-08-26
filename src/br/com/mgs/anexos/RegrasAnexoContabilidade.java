@@ -32,7 +32,7 @@ public class RegrasAnexoContabilidade {
 
         if( vo.asString("NOMEINSTANCIA").equalsIgnoreCase(String.valueOf("AD_TCBIMPMANCAB")) ){
 
-            Collection<DynamicVO> importacaoPlanilhaITENSVO = importacaoPlanilhaITEDAO.find("NUIMPMAN = ?", new Object[]{ numeroUnico });
+            Collection<DynamicVO> importacaoPlanilhaITENSVO = importacaoPlanilhaITEDAO.find("NUIMPMAN = ? AND ROWNUM <= 1", new Object[]{ numeroUnico });
             Iterator lancamentos = importacaoPlanilhaITENSVO.iterator();
 
             while( lancamentos.hasNext() ){
