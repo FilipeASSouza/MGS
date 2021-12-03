@@ -1,11 +1,13 @@
 package br.com.mgs.anexos;
 
 import br.com.mgs.utils.NativeSqlDecorator;
+import br.com.sankhya.jape.dao.JdbcWrapper;
 import br.com.sankhya.jape.util.JapeSessionContext;
 import br.com.sankhya.jape.vo.DynamicVO;
 import br.com.sankhya.jape.wrapper.JapeFactory;
 import br.com.sankhya.jape.wrapper.JapeWrapper;
 import br.com.sankhya.jape.wrapper.fluid.FluidCreateVO;
+import br.com.sankhya.modelcore.util.EntityFacadeFactory;
 import br.com.sankhya.modelcore.util.SWRepositoryUtils;
 import com.sankhya.util.TimeUtils;
 import org.apache.commons.io.FileUtils;
@@ -27,6 +29,7 @@ public class AgendamentoAnexo implements ScheduledAction {
     private BigDecimal numeroUnicoNota;
     private String descricaoArquivo;
     private JapeWrapper apoioAnexoLogDAO = JapeFactory.dao("AD_ANEXOTSIATAETSIANXLOG");
+    private JdbcWrapper jdbcWrapper = EntityFacadeFactory.getCoreFacade().getJdbcWrapper();
 
     @Override
     public void onTime(ScheduledActionContext scheduledActionContext){

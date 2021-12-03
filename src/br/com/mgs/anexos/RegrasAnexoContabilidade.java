@@ -2,11 +2,13 @@ package br.com.mgs.anexos;
 
 import br.com.mgs.utils.ErroUtils;
 import br.com.mgs.utils.NativeSqlDecorator;
+import br.com.sankhya.jape.dao.JdbcWrapper;
 import br.com.sankhya.jape.event.PersistenceEvent;
 import br.com.sankhya.jape.vo.DynamicVO;
 import br.com.sankhya.jape.wrapper.JapeFactory;
 import br.com.sankhya.jape.wrapper.JapeWrapper;
 import br.com.sankhya.modelcore.auth.AuthenticationInfo;
+import br.com.sankhya.modelcore.util.EntityFacadeFactory;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -20,6 +22,7 @@ public class RegrasAnexoContabilidade {
     private static JapeWrapper importacaoPlanilhaITEDAO = JapeFactory.dao("AD_TCBIMPMANITE"); //AD_TCBIMPMANITE
     private static JapeWrapper mestreLotesDAO = JapeFactory.dao("MestreLote"); //TCBLOT
     private static JapeWrapper usuariosDAO = JapeFactory.dao("Usuario"); // TSIUSU
+    private static JdbcWrapper jdbcWrapper = EntityFacadeFactory.getDWFFacade().getJdbcWrapper();
 
     public static void validarAnexoImportacaoPlanilhaLotesContabeis(PersistenceEvent persistenceEvent) throws Exception{
 
@@ -51,7 +54,7 @@ public class RegrasAnexoContabilidade {
                         " AND LAN.SEQUENCIA = :SEQUENCIA" +
                         " AND LAN.NUMLOTE = :NUMLOTE" +
                         " AND LAN.CODCTACTB = :CODCTACTB" +
-                        " AND LAN.REFERENCIA = ( '01' || TO_CHAR( TO_DATE(:REFERENCIA ), 'MMYYYY' ) ) ");
+                        " AND LAN.REFERENCIA = ( '01' || TO_CHAR( TO_DATE(:REFERENCIA ), 'MMYYYY' ) ) ", jdbcWrapper );
                 verificarContabilizacaoSQL.setParametro("NUMDOC", numeroDocumento);
                 verificarContabilizacaoSQL.setParametro("SEQUENCIA", sequencia);
                 verificarContabilizacaoSQL.setParametro("NUMLOTE", numeroLote);
@@ -63,6 +66,8 @@ public class RegrasAnexoContabilidade {
                 if( verificarContabilizacaoSQL.proximo() ){
                     dataCompetencia = verificarContabilizacaoSQL.getValorTimestamp("REFERENCIA");
                 }
+
+                verificarContabilizacaoSQL.close();
 
                 // Verificando a situação do lote e a data de competencia "Fechado"
 

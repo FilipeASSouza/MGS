@@ -1,5 +1,6 @@
 package br.com.mgs.utils;
 
+import br.com.sankhya.jape.dao.JdbcWrapper;
 import br.com.sankhya.jape.sql.NativeSql;
 import br.com.sankhya.modelcore.util.EntityFacadeFactory;
 
@@ -19,12 +20,14 @@ public class NativeSqlDecorator {
     private String sql;
     private boolean aberto = false;
     ResultSet resultSet;
+    private JdbcWrapper jdbcWrapper;
 
     private NativeSqlDecorator() {
     }
 
-    public NativeSqlDecorator(String sql) {
+    public NativeSqlDecorator(String sql, JdbcWrapper jdbcWrapper) {
         this.iniciar();
+        this.jdbcWrapper = jdbcWrapper;
         this.nativeSql.appendSql(sql);
     }
 
@@ -76,7 +79,8 @@ public class NativeSqlDecorator {
     }
 
     private void iniciar() {
-        this.nativeSql = new NativeSql(EntityFacadeFactory.getDWFFacade().getJdbcWrapper());
+        this.jdbcWrapper = EntityFacadeFactory.getDWFFacade().getJdbcWrapper();
+        this.nativeSql = new NativeSql(this.jdbcWrapper);
     }
 
     public void executar() throws Exception {
@@ -103,5 +107,13 @@ public class NativeSqlDecorator {
         }
 
         return buf.toString();
+    }
+
+    public void close() throws Exception {
+        if(this.nativeSql != null){
+            NativeSql.releaseResources(this.nativeSql);
+            this.resultSet.close();
+        }
+        this.jdbcWrapper.closeSession();
     }
 }

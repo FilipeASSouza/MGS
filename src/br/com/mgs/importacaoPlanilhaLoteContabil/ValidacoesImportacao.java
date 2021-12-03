@@ -37,7 +37,7 @@ public class ValidacoesImportacao {
             DynamicVO usuarioVO = usuariosDAO.findByPK(AuthenticationInfo.getCurrent().getUserID());
 
             NativeSqlDecorator mestreLote = new NativeSqlDecorator("SELECT SITUACAO FROM TCBLOT WHERE CODEMP = :CODEMP " +
-                            "AND TO_CHAR( REFERENCIA, 'YYYYMM' ) = :REFERENCIA AND NUMLOTE = :NUMLOTE ");
+                            "AND TO_CHAR( REFERENCIA, 'YYYYMM' ) = :REFERENCIA AND NUMLOTE = :NUMLOTE ", persistenceEvent.getJdbcWrapper());
             mestreLote.setParametro("CODEMP", importacaoPlanilhaITE.asBigDecimal("CODEMP"));
             mestreLote.setParametro("REFERENCIA", TimeUtils.getYearMonth(importacaoPlanilhaITE.asTimestamp("DTREF")));
             mestreLote.setParametro("NUMLOTE", importacaoPlanilhaITE.asBigDecimal("NUMLOTE"));
@@ -56,6 +56,7 @@ public class ValidacoesImportacao {
                     ErroUtils.disparaErro("Lançamentos contabeis gerados, não é permitido excluir! Fineza verificar!");
                 }
             }
+            mestreLote.close();
         }
     }
 
@@ -72,7 +73,7 @@ public class ValidacoesImportacao {
         DynamicVO usuarioVO = usuariosDAO.findByPK(AuthenticationInfo.getCurrent().getUserID());
 
         NativeSqlDecorator mestreLote = new NativeSqlDecorator("SELECT SITUACAO FROM TCBLOT WHERE CODEMP = :CODEMP " +
-                "AND TO_CHAR( REFERENCIA, 'YYYYMM' ) = :REFERENCIA AND NUMLOTE = :NUMLOTE ");
+                "AND TO_CHAR( REFERENCIA, 'YYYYMM' ) = :REFERENCIA AND NUMLOTE = :NUMLOTE ", persistenceEvent.getJdbcWrapper());
         mestreLote.setParametro("CODEMP", vo.asBigDecimal("CODEMP"));
         mestreLote.setParametro("REFERENCIA", TimeUtils.getYearMonth(vo.asTimestamp("DTREF")));
         mestreLote.setParametro("NUMLOTE", vo.asBigDecimal("NUMLOTE"));
@@ -92,6 +93,7 @@ public class ValidacoesImportacao {
                     ErroUtils.disparaErro("Lançamentos contabeis gerados, não é permitido excluir o registro! Fineza verificar!");
             }
         }
+        mestreLote.close();
     }
 
     public static void validaAtualizacaoImportacaoPlanilhaLoteContabilCabecalho (PersistenceEvent persistenceEvent) throws Exception{
@@ -113,7 +115,7 @@ public class ValidacoesImportacao {
             // Verificando se foi gerado os lançamentos contabeis
 
             NativeSqlDecorator mestreLote = new NativeSqlDecorator("SELECT SITUACAO FROM TCBLOT WHERE CODEMP = :CODEMP " +
-                    "AND TO_CHAR( REFERENCIA, 'YYYYMM' ) = :REFERENCIA AND NUMLOTE = :NUMLOTE ");
+                    "AND TO_CHAR( REFERENCIA, 'YYYYMM' ) = :REFERENCIA AND NUMLOTE = :NUMLOTE ", persistenceEvent.getJdbcWrapper());
             mestreLote.setParametro("CODEMP", vo.asBigDecimal("CODEMP"));
             mestreLote.setParametro("REFERENCIA", TimeUtils.getYearMonth(vo.asTimestamp("DTREF")));
             mestreLote.setParametro("NUMLOTE", vo.asBigDecimal("NUMLOTE"));
@@ -133,6 +135,7 @@ public class ValidacoesImportacao {
                         ErroUtils.disparaErro("Lançamentos importados, não é permitido alterar! Fineza verificar!");
                 }
             }
+            mestreLote.close();
         }
     }
 
@@ -151,7 +154,7 @@ public class ValidacoesImportacao {
 
             NativeSqlDecorator mestreLote = new NativeSqlDecorator("SELECT SITUACAO FROM TCBLOT WHERE CODEMP = :CODEMP " +
                     " AND TO_CHAR( REFERENCIA, 'YYYYMM' ) = :REFERENCIA " +
-                    " AND NUMLOTE = :NUMLOTE ");
+                    " AND NUMLOTE = :NUMLOTE ", persistenceEvent.getJdbcWrapper());
             mestreLote.setParametro("CODEMP", vo.asBigDecimal("CODEMP"));
             mestreLote.setParametro("REFERENCIA", TimeUtils.getYearMonth(vo.asTimestamp("DTREF")));
             mestreLote.setParametro("NUMLOTE", vo.asBigDecimal("NUMLOTE"));
@@ -174,6 +177,7 @@ public class ValidacoesImportacao {
                         ErroUtils.disparaErro("Lançamentos importados, não é permitido alterar! Fineza verificar!");
                 }
             }
+            mestreLote.close();
         }
     }
 }

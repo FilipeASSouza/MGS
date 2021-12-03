@@ -5,15 +5,20 @@ import br.com.sankhya.extensions.actionbutton.AcaoRotinaJava;
 import br.com.sankhya.extensions.actionbutton.ContextoAcao;
 import br.com.sankhya.extensions.actionbutton.Registro;
 import br.com.sankhya.jape.core.JapeSession;
+import br.com.sankhya.jape.dao.JdbcWrapper;
 import br.com.sankhya.jape.vo.DynamicVO;
 import br.com.sankhya.jape.wrapper.JapeFactory;
 import br.com.sankhya.jape.wrapper.JapeWrapper;
+import br.com.sankhya.modelcore.util.EntityFacadeFactory;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Collection;
 
 public class RecalculoINSSAcao implements AcaoRotinaJava {
+
+    private JdbcWrapper jdbcWrapper = EntityFacadeFactory.getDWFFacade().getJdbcWrapper();
+
     @Override
     public void doAction(ContextoAcao ct) throws Exception {
 
@@ -102,12 +107,14 @@ public class RecalculoINSSAcao implements AcaoRotinaJava {
                         "       ) AS VLRLIQ\n" +
                         "  FROM TGFCAB CAB\n" +
                         "  INNER JOIN TGFITE ON TGFITE.NUNOTA = CAB.NUNOTA " +
-                        " WHERE CAB.NUNOTA = :NUNOTA");
+                        " WHERE CAB.NUNOTA = :NUNOTA", jdbcWrapper );
                 valorLiquidoItemSQL.setParametro("NUNOTA", (BigDecimal) linha.getCampo("NUNOTA"));
 
                 if(valorLiquidoItemSQL.proximo()){
                     valorLiquidoItem = valorLiquidoItemSQL.getValorBigDecimal("VLRLIQ");
                 }
+
+                valorLiquidoItemSQL.close();
 
                 DynamicVO cabecalhoVO = cabecalhoDAO.findOne("NUNOTA = ?"
                         , new Object[]{ linha.getCampo("NUNOTA") });
@@ -134,30 +141,36 @@ public class RecalculoINSSAcao implements AcaoRotinaJava {
                             " SET VLRINSS = :VLRINSS " +
                             " , BASEINSS = :BASEINSS " +
                             " , VLRNOTA = :VLRNOTA " +
-                            " WHERE NUNOTA = :NUNOTA");
+                            " WHERE NUNOTA = :NUNOTA", jdbcWrapper );
                     updateCentralSQL.setParametro("VLRINSS", valorINSS );
                     updateCentralSQL.setParametro("BASEINSS", valorTotalBrutoItem );
                     updateCentralSQL.setParametro("VLRNOTA", valorNota );
                     updateCentralSQL.setParametro("NUNOTA", nunota );
                     updateCentralSQL.atualizar();
 
+                    updateCentralSQL.close();
+
                     NativeSqlDecorator updateFinanceiroSQL = new NativeSqlDecorator(" UPDATE TGFFIN " +
                             " SET VLRDESDOB = :VLRDESDOB " +
-                            " WHERE NUNOTA = :NUNOTA ");
+                            " WHERE NUNOTA = :NUNOTA ", jdbcWrapper );
                     updateFinanceiroSQL.setParametro("VLRDESDOB", valorNota );
                     updateFinanceiroSQL.setParametro("NUNOTA", nunota );
                     updateFinanceiroSQL.atualizar();
+
+                    updateFinanceiroSQL.close();
 
 
                     NativeSqlDecorator updateImpostoINSSSQL = new NativeSqlDecorator(" UPDATE TGFDIN " +
                             " SET VALOR = :VALOR, BASE = :BASE, BASERED = :BASERED " +
                             " WHERE NUNOTA = :NUNOTA AND SEQUENCIA = 1 " +
-                            " AND CODIMP = 5 AND CODINC = 0 ");
+                            " AND CODIMP = 5 AND CODINC = 0 ", jdbcWrapper );
                     updateImpostoINSSSQL.setParametro("VALOR", valorINSS );
                     updateImpostoINSSSQL.setParametro("BASE", valorTotalBrutoItem );
                     updateImpostoINSSSQL.setParametro("BASERED", valorTotalBrutoItem );
                     updateImpostoINSSSQL.setParametro("NUNOTA", nunota );
                     updateImpostoINSSSQL.atualizar();
+
+                    updateImpostoINSSSQL.close();
 
                     /*
                     Atualizando os campos:

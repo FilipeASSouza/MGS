@@ -33,13 +33,15 @@ public class AgendamentoAnexoAcao implements AcaoRotinaJava {
         } catch (Exception e) {
             FluidCreateVO apoioAnexoLogFCVO = apoioAnexoLogDAO.create();
             apoioAnexoLogFCVO.set("NUATTACH", numeroUnicoAnexoOrigem );
-            apoioAnexoLogFCVO.set("STATUS", e.getMessage() + " Nufin: " + nomeArquivoOrigem.substring(0,7) );
+            apoioAnexoLogFCVO.set("STATUS", e.getMessage() + " Nufin: " + "nomeArquivoOrigem.substring(0,7)" );
             try {
                 apoioAnexoLogFCVO.save();
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
             e.printStackTrace();
+        }finally {
+            listaPendenciasNSD.close();
         }
     }
 
@@ -50,7 +52,7 @@ public class AgendamentoAnexoAcao implements AcaoRotinaJava {
 
 
     private void carregarBaseProcessamento() throws Exception {
-        listaPendenciasNSD = new NativeSqlDecorator(this, "queAgendamentoAnexoBase.sql");
+        listaPendenciasNSD = new NativeSqlDecorator(this, "queAgendamentoAnexoBase.sql" );
     }
 
     private void percorrerlistadePendencias() throws Exception {
