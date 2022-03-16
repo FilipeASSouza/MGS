@@ -1,5 +1,6 @@
 package br.com.mgs.bloqueioRequisicao;
 
+import br.com.mgs.utils.BuscaDadosFuncionario;
 import br.com.mgs.utils.ErroUtils;
 import br.com.sankhya.extensions.eventoprogramavel.EventoProgramavelJava;
 import br.com.sankhya.jape.event.PersistenceEvent;
@@ -12,11 +13,19 @@ public class EventoEmpregadoDemitido implements EventoProgramavelJava {
     @Override
     public void beforeInsert(PersistenceEvent persistenceEvent) throws Exception {
         DynamicVO cabecalhoVO = (DynamicVO) persistenceEvent.getVo();
+        BigDecimal codigoTipoOperacao = cabecalhoVO.asBigDecimalOrZero("CODTIPOPER");
+        String situacao = cabecalhoVO.asString("AD_SITUACAO");
+
+        if( codigoTipoOperacao.equals(BigDecimal.valueOf(303L))
+                || codigoTipoOperacao.equals(String.valueOf("328"))
+                && ( situacao == null || situacao.isEmpty() ) ){
+            new BuscaDadosFuncionario().executar(persistenceEvent);
+        }
 
         if( cabecalhoVO.asString("TIPMOV").equalsIgnoreCase(String.valueOf("J"))
                 && ( cabecalhoVO.asString("AD_SITUACAO") != null && !cabecalhoVO.asString("AD_SITUACAO").isEmpty() )
                     && cabecalhoVO.asString("AD_SITUACAO").equals(String.valueOf("Demitido")) ){
-            ErroUtils.disparaErro("Empregado não pertence mais ao grupo da empresa, fineza verificar!");
+            ErroUtils.disparaErro("Empregado pertencente a matricula: " + cabecalhoVO.asString("AD_MATRICULA") + " não pertence mais ao grupo da empresa, fineza verificar!");
         }
     }
 
@@ -28,7 +37,7 @@ public class EventoEmpregadoDemitido implements EventoProgramavelJava {
             if( cabecalhoVO.asString("TIPMOV").equalsIgnoreCase(String.valueOf("J"))
                     && ( cabecalhoVO.asString("AD_SITUACAO") != null && !cabecalhoVO.asString("AD_SITUACAO").isEmpty() )
                     && cabecalhoVO.asString("AD_SITUACAO").equals(String.valueOf("Demitido")) ){
-                ErroUtils.disparaErro("Empregado não pertence mais ao grupo da empresa, fineza verificar!");
+                ErroUtils.disparaErro("Empregado pertencente a matricula: "+ cabecalhoVO.asString("AD_MATRICULA") + " não pertence mais ao grupo da empresa, fineza verificar!");
             }
         }
     }

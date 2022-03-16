@@ -18,6 +18,8 @@ import java.sql.Timestamp;
 public class JobCorrecaoStatus500 implements ScheduledAction {
 
     private NativeSqlDecorator listaPendencias = null;
+    private NativeSqlDecorator listaPagamentos = null;
+    private NativeSqlDecorator atualizarRegistro = null;
     private JapeWrapper filaIntegracaoDAO = JapeFactory.dao("TSIFILINT");
     private BigDecimal numeroFilIntegracao;
     private JdbcWrapper jdbcWrapper = EntityFacadeFactory.getCoreFacade().getJdbcWrapper();
@@ -53,7 +55,25 @@ public class JobCorrecaoStatus500 implements ScheduledAction {
     private void percorrerListaProcessamento() throws Exception{
         while(listaPendencias.proximo()){
             numeroFilIntegracao = listaPendencias.getValorBigDecimal("NUFILAINTEGRACAO");
+            BigDecimal numeroFinanceiro = listaPendencias.getValorBigDecimal("CHAVE");
+            verificarPagamento( numeroFinanceiro );
             atualizarRegistros();
+        }
+    }
+
+    private void verificarPagamento( BigDecimal numeroUnicoFinanceiro ) throws Exception {
+        listaPagamentos = new NativeSqlDecorator(this, "consultarPagamento.sql");
+        listaPagamentos.setParametro("NUFIN", numeroUnicoFinanceiro );
+        while(listaPagamentos.proximo()){
+            try {
+                atualizarRegistro = new NativeSqlDecorator("UPDATE AD_TSIFILINT SET STATUSVERIFICACAO = 'S' WHERE CHAVE = :NUFIN", jdbcWrapper);
+                atualizarRegistro.setParametro("NUFIN", numeroUnicoFinanceiro);
+                atualizarRegistro.atualizar();
+            }catch(Exception e){
+                e.printStackTrace();
+            }finally {
+                atualizarRegistro.close();
+            }
         }
     }
 
